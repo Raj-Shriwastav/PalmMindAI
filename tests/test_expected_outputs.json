@@ -1,0 +1,60 @@
+{
+  "ingestion_responses": {
+    "success_recursive": {
+      "status": "success",
+      "message": "File 'company_policy.txt' ingested successfully.",
+      "document_id": "doc-uuid-placeholder-1111",
+      "strategy_used": "recursive",
+      "embedding_model": "Snowflake/snowflake-arctic-embed-m",
+      "chunks_count": 3,
+      "metadata": {
+        "filename": "company_policy.txt",
+        "file_size_bytes": 352,
+        "timestamp": "2026-05-20T11:55:18+05:45"
+      }
+    },
+    "success_semantic": {
+      "status": "success",
+      "message": "File 'product_specs.txt' ingested successfully.",
+      "document_id": "doc-uuid-placeholder-2222",
+      "strategy_used": "semantic",
+      "embedding_model": "Snowflake/snowflake-arctic-embed-m",
+      "chunks_count": 2,
+      "metadata": {
+        "filename": "product_specs.txt",
+        "file_size_bytes": 507,
+        "timestamp": "2026-05-20T11:55:18+05:45"
+      }
+    }
+  },
+  "chat_responses": {
+    "greeting_response": {
+      "session_id": "session-test-001",
+      "response": "Hello! I am an intelligent Agentic Assistant powered by LangGraph, PostgreSQL, Qdrant, and Redis. I have two primary tools at my disposal: 'retrieve_knowledge' to fetch custom context from uploaded policies, and 'book_interview' to schedule calls directly in our database. How can I help you today?",
+      "history": [
+        {"role": "user", "content": "Hello! I am a new engineer exploring the backend. Who are you and what tools do you have?"},
+        {"role": "assistant", "content": "Hello! I am an intelligent Agentic Assistant powered by LangGraph..."}
+      ]
+    },
+    "rag_retrieval_response": {
+      "session_id": "session-test-001",
+      "response": "Based on the retrieved guidelines, standard working hours at PalmMind are 9:00 AM to 6:00 PM (with up to 2 days a week flexible work-from-home options). The core platform leverages the 'Snowflake/snowflake-arctic-embed-m' embedding model for vector storage in Qdrant.",
+      "history": [
+        {"role": "user", "content": "Hello! I am a new engineer exploring the ..."},
+        {"role": "assistant", "content": "Hello! I am an intelligent Agentic ..."},
+        {"role": "user", "content": "Based on the uploaded documents, what are standard working hours at PalmMind, and what embedding model does the platform use?"},
+        {"role": "assistant", "content": "Based on the retrieved guidelines, standard working hours..."}
+      ]
+    },
+    "booking_trigger_response": {
+      "session_id": "session-test-001",
+      "response": "I have successfully scheduled your interview, Raj! The slot is confirmed for June 10, 2026, at 11:00 AM. A confirmation email has been dispatched to raj.shriwastava@example.com, and the booking transaction has been recorded in our PostgreSQL database.",
+      "history": [
+        {"role": "user", "content": "..."},
+        {"role": "assistant", "content": "..."},
+        {"role": "user", "content": "I would like to book an interview. My name is Raj Shriwastava, email is raj.shriwastava@example.com, and I'd like to schedule it for June 10, 2026, at 11:00 AM."},
+        {"role": "assistant", "content": "I have successfully scheduled your interview, Raj!..."}
+      ]
+    }
+  }
+}

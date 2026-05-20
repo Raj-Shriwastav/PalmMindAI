@@ -1,0 +1,126 @@
+# ==============================================================================
+# PalmMind AI — Professional Git Ignore Template (.gitignore)
+# ==============================================================================
+
+# --- Python Compiled Files & Caches ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# --- Virtual Environments ---
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# --- Environment Configuration & Secrets (CRITICAL) ---
+.env
+.env.*
+!.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+.clinerules
+.cursorrules
+
+# --- Local Databases & Data Stores ---
+# Ignore any local database files, dumps, or persistent container data
+*.db
+*.sqlite
+*.sqlite3
+postgres_data/
+redis_data/
+qdrant_data/
+
+# --- IDEs, Text Editors, & Project Metadata ---
+# VS Code
+.vscode/
+!.vscode/extensions.json
+.vscode/*
+*.code-workspace
+.history/
+
+# JetBrains / PyCharm
+.idea/
+*.iml
+out/
+
+# General Editors
+*.swp
+*.swo
+*~
+.sass-cache/
+
+# --- Operating System Files ---
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]ownload/
+[Tt]emp/
+$RECYCLE.BIN/
+System Volume Information/
+
+# --- Testing & Code Quality Tools ---
+# Pytest (Keep tests/ folder, but ignore pytest metadata & cache!)
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+.mutmut-cache
+
+# --- Logs & Diagnostics ---
+*.log
+pip-log.txt
+pip-delete-this-directory.txt
+docker-compose.log
+.system_generated/
+*.bak
+
+# --- Embedding & AI Caches ---
+# FastEmbed and other model libraries download weights into local caches.
+.fastembed_cache/
+fastembed_cache/
+.cache/huggingface/
+.cache/torch/

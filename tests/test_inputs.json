@@ -1,0 +1,31 @@
+{
+  "ingestion": {
+    "recursive_chunking": {
+      "file_name": "company_policy.txt",
+      "file_content": "PalmMind AI Work Culture and Policy Guidelines.\n1. Working Hours: Our standard working hours are 9:00 AM to 6:00 PM. We offer flexible work-from-home options up to 2 days a week.\n2. Leave Policy: Employees are entitled to 20 days of paid annual leave, which accrues monthly.\n3. Dynamic Team Roles: We build highly modular agentic systems and value rapid iteration, clean software architecture, and robust automated tests.",
+      "chunk_strategy": "recursive",
+      "chunk_size": 200,
+      "chunk_overlap": 20
+    },
+    "semantic_chunking": {
+      "file_name": "product_specs.txt",
+      "file_content": "Introduction to PalmMind AI Core Agentic Platform. The platform leverages direct llama.cpp connections for ultra-low latency inference. This is accelerated using hardware-accelerated NVIDIA GPU passthroughs. In contrast to standard chain architectures, our systems run on dynamic LangGraph state loops. Ingestion utilizes the Snowflake Arctic-Embed-M model to embed text chunks into our Qdrant vector database. All user bookings and conversational memory checkpointers are persisted directly to local Postgres and Redis instances.",
+      "chunk_strategy": "semantic",
+      "similarity_percentile": 90
+    }
+  },
+  "chat": {
+    "greeting": {
+      "session_id": "session-test-001",
+      "message": "Hello! I am a new engineer exploring the backend. Who are you and what tools do you have?"
+    },
+    "rag_retrieval": {
+      "session_id": "session-test-001",
+      "message": "Based on the uploaded documents, what are standard working hours at PalmMind, and what embedding model does the platform use?"
+    },
+    "booking_trigger": {
+      "session_id": "session-test-001",
+      "message": "I would like to book an interview. My name is Raj Shriwastava, email is rajshriwastav2318@gmail.com, and I'd like to schedule it for June 10, 2026, at 11:00 AM."
+    }
+  }
+}
