@@ -111,7 +111,7 @@ If this shows your GPU info, you're good to go!
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/Raj-Shriwastav/PalmMindAI
 cd PalmMindAI
 
 # Create a Python virtual environment
