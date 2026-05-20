@@ -649,7 +649,3 @@ qdrant:
 ```
 
 ---
-
-## 📄 License
-
-This project is proprietary to PalmMind AI Engineering.
