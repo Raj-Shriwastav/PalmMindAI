@@ -38,7 +38,7 @@ def build_multipart_formdata(filename, content, fields, boundary="----PalmMindTe
     content_type = f"multipart/form-data; boundary={boundary}"
     return body.encode("utf-8"), content_type
 
-def test_endpoint_upload(filename, content, fields, strategy):
+def run_endpoint_upload(filename, content, fields, strategy):
     url = f"{API_BASE_URL}/upload"
     print(f"\n---> Testing POST /upload with strategy '{strategy}'...")
     
@@ -74,7 +74,7 @@ def test_endpoint_upload(filename, content, fields, strategy):
         print(f"[FAILED] Unexpected error: {str(e)}")
         return False
 
-def test_endpoint_chat(payload, test_name):
+def run_endpoint_chat(payload, test_name):
     url = f"{API_BASE_URL}/chat"
     print(f"\n---> Testing POST /chat [{test_name}]...")
     
@@ -126,7 +126,7 @@ if __name__ == "__main__":
         "chunk_size": rec_inputs["chunk_size"],
         "chunk_overlap": rec_inputs["chunk_overlap"]
     }
-    t1 = test_endpoint_upload(
+    t1 = run_endpoint_upload(
         rec_inputs["file_name"], 
         rec_inputs["file_content"], 
         fields_rec, 
@@ -139,7 +139,7 @@ if __name__ == "__main__":
         "chunk_strategy": sem_inputs["chunk_strategy"],
         "similarity_percentile": sem_inputs["similarity_percentile"]
     }
-    t2 = test_endpoint_upload(
+    t2 = run_endpoint_upload(
         sem_inputs["file_name"], 
         sem_inputs["file_content"], 
         fields_sem, 
@@ -147,13 +147,13 @@ if __name__ == "__main__":
     )
     
     # 3. Test Chat - Standard Greeting
-    t3 = test_endpoint_chat(inputs["chat"]["greeting"], "Greeting")
+    t3 = run_endpoint_chat(inputs["chat"]["greeting"], "Greeting")
     
     # 4. Test Chat - RAG Query
-    t4 = test_endpoint_chat(inputs["chat"]["rag_retrieval"], "RAG Retrieval")
+    t4 = run_endpoint_chat(inputs["chat"]["rag_retrieval"], "RAG Retrieval")
     
     # 5. Test Chat - Booking Tool Automation
-    t5 = test_endpoint_chat(inputs["chat"]["booking_trigger"], "Booking Activation")
+    t5 = run_endpoint_chat(inputs["chat"]["booking_trigger"], "Booking Activation")
     
     print("\n==================================================")
     print("Integration Test Run Results")

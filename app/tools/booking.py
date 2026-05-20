@@ -57,8 +57,34 @@ def book_interview(full_name: str, email: str, date: str, time: str) -> str:
     Returns:
         A status string detailing the schedule outcomes.
     """
+    import re
     try:
-        # 1. Commit booking entry to Postgres via Repository
+        # 1. Validate email address format strictly
+        email = email.strip()
+        email_regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+        if not re.match(email_regex, email):
+            return f"Error: The email address '{email}' is invalid. Please provide a valid email format (e.g. candidate@example.com)."
+
+        # 2. Sanitize and validate full_name
+        full_name = full_name.strip()
+        # Remove any HTML tags or script elements to mitigate injection vectors
+        full_name = re.sub(r"<[^>]*>", "", full_name)
+        if not full_name:
+            return "Error: The full name cannot be empty and must contain valid text characters."
+
+        # 3. Validate date format (YYYY-MM-DD)
+        date = date.strip()
+        date_regex = r"^\d{4}-\d{2}-\d{2}$"
+        if not re.match(date_regex, date):
+            return f"Error: The date '{date}' is invalid. Please format the date as 'YYYY-MM-DD' (e.g., 2026-06-10)."
+
+        # 4. Validate time format (e.g., '11:00 AM', '15:30')
+        time = time.strip()
+        time_regex = r"^\d{1,2}:\d{2}\s*(?:AM|PM|am|pm)?$"
+        if not re.match(time_regex, time):
+            return f"Error: The time '{time}' is invalid. Please format the time slot clearly (e.g. '11:00 AM' or '15:30')."
+
+        # 5. Commit booking entry to Postgres via Repository
         db: Session = SessionLocal()
         try:
             repo = BookingRepository(db)

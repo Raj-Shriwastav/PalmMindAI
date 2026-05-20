@@ -17,6 +17,17 @@ class RedisCheckpointSaver(BaseCheckpointSaver):
     
     Persists agent conversation context dynamically across turns linked to user session IDs.
     Implements both sync and async interfaces required by LangGraph.
+    
+    ⚠️ SECURITY WARNING (CISA / OWASP Compliance):
+    This checkpointer uses Python's 'pickle' module for serialization. Pickle is required to
+    correctly serialize complex internal LangChain/LangGraph state classes and dynamic graphs.
+    However, parsing untrusted pickled data can lead to Arbitrary Code Execution (ACE).
+    
+    To secure this pipeline in production:
+    1. Ensure the Redis server is bound exclusively to 'localhost' (127.0.0.1) or run within an
+       isolated, private virtual network (e.g. Docker network bridges / Kubernetes private subnets).
+    2. NEVER expose the Redis port (6379) to the public internet.
+    3. Enable robust authentication (Redis ACLs / 'requirepass') using high-entropy passwords.
     """
     def __init__(self, host: str, port: int, db: int = 0):
         super().__init__()

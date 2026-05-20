@@ -4,10 +4,15 @@ import sys
 import urllib.request
 import urllib.error
 
+from app.core.config import settings
+
 def verify_llama_cpp():
-    url = "http://localhost:8080/v1/chat/completions"
+    # Dynamically build standard chat completions URL from settings config
+    base_url = settings.LLM_BASE_URL.rstrip("/")
+    url = f"{base_url}/chat/completions"
+    
     payload = {
-        "model": "Qwen3.5-4B-Q4_K_S.gguf",
+        "model": settings.LLM_MODEL_NAME,
         "messages": [
             {"role": "system", "content": "You are a helpful and concise assistant."},
             {"role": "user", "content": "Hello! Please reply with exactly: 'LLaMA.cpp server is successfully connected and responding with GPU acceleration!'"}
@@ -52,10 +57,9 @@ def verify_llama_cpp():
         print(f"Reason: {e.reason}")
         print("\nPlease verify that:")
         print("  1. Your Docker container is running.")
-        print("  2. It is mapped to the correct host port (8080).")
+        print("  2. It is mapped to the correct host port.")
         print("  3. The model file path inside the container is correct.")
-        print("\nEnsure you started the model with the following command:")
-        print('  docker run -p 8080:8080 --gpus all -v "C:\\Users\\RAJ SHRIWASTAVA\\.lmstudio\\models\\unsloth\\Qwen3.5-4B-GGUF:/models" ghcr.io/ggml-org/llama.cpp:server-cuda -m /models/Qwen3.5-4B-Q4_K_S.gguf --mmproj /models/mmproj-F32.gguf -ngl 99')
+        print("\nEnsure you started the model with the correct local docker execution syntax.")
         return False
     except Exception as e:
         print(f"\n[ERROR] An unexpected error occurred: {str(e)}")

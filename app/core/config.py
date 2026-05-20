@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     POSTGRES_HOST: str = Field(default="localhost")
     POSTGRES_PORT: int = Field(default=5432)
 
+    # CORS Configuration
+    CORS_ORIGINS: str = Field(default="*")
+
     # Redis Configuration
     REDIS_HOST: str = Field(default="localhost")
     REDIS_PORT: int = Field(default=6379)

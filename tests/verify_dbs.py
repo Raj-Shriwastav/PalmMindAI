@@ -3,6 +3,8 @@ import sys
 import socket
 import time
 
+from app.core.config import settings
+
 def check_socket(host, port, service_name):
     print(f"Checking TCP connection to {service_name} on {host}:{port}...")
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -27,9 +29,9 @@ def verify_postgres():
     print("Verifying PostgreSQL Service")
     print("==========================================")
     
-    port_ok = check_socket("localhost", 5432, "PostgreSQL")
+    port_ok = check_socket(settings.POSTGRES_HOST, settings.POSTGRES_PORT, "PostgreSQL")
     if not port_ok:
-        print("[WARNING] PostgreSQL is not accessible on localhost:5432.")
+        print(f"[WARNING] PostgreSQL is not accessible on {settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}.")
         return False
         
     try:
@@ -40,13 +42,13 @@ def verify_postgres():
         
     try:
         print("Testing DB Connection with psycopg2...")
-        # Try local default settings (assumes user will supply valid credentials via .env in final app)
+        # Dynamically load all connection configurations from Settings
         conn = psycopg2.connect(
-            host="localhost",
-            port=5432,
-            user="postgres",
-            password="postgres",
-            database="postgres",
+            host=settings.POSTGRES_HOST,
+            port=settings.POSTGRES_PORT,
+            user=settings.POSTGRES_USER,
+            password=settings.POSTGRES_PASSWORD,
+            database=settings.POSTGRES_DB,
             connect_timeout=3
         )
         cursor = conn.cursor()
@@ -68,9 +70,9 @@ def verify_redis():
     print("Verifying Redis Service")
     print("==========================================")
     
-    port_ok = check_socket("localhost", 6379, "Redis")
+    port_ok = check_socket(settings.REDIS_HOST, settings.REDIS_PORT, "Redis")
     if not port_ok:
-        print("[WARNING] Redis is not accessible on localhost:6379.")
+        print(f"[WARNING] Redis is not accessible on {settings.REDIS_HOST}:{settings.REDIS_PORT}.")
         return False
         
     try:
@@ -81,7 +83,7 @@ def verify_redis():
         
     try:
         print("Testing Redis client Ping...")
-        r = redis.Redis(host="localhost", port=6379, db=0, socket_timeout=3)
+        r = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0, socket_timeout=3)
         pong = r.ping()
         if pong:
             print("  [SUCCESS] Redis ping returned PONG!")
@@ -98,9 +100,9 @@ def verify_qdrant():
     print("Verifying Qdrant Service")
     print("==========================================")
     
-    port_ok = check_socket("localhost", 6333, "Qdrant REST API")
+    port_ok = check_socket(settings.QDRANT_HOST, settings.QDRANT_PORT, "Qdrant REST API")
     if not port_ok:
-        print("[WARNING] Qdrant is not accessible on localhost:6333.")
+        print(f"[WARNING] Qdrant is not accessible on {settings.QDRANT_HOST}:{settings.QDRANT_PORT}.")
         return False
         
     try:
@@ -111,7 +113,7 @@ def verify_qdrant():
         
     try:
         print("Testing Qdrant connection with qdrant-client...")
-        client = qdrant_client.QdrantClient(host="localhost", port=6333, timeout=3.0)
+        client = qdrant_client.QdrantClient(host=settings.QDRANT_HOST, port=settings.QDRANT_PORT, timeout=3.0)
         collections = client.get_collections()
         print("  [SUCCESS] Connected to Qdrant!")
         print(f"  Collections present: {len(collections.collections)}")
@@ -123,7 +125,7 @@ def verify_qdrant():
         return False
 
 if __name__ == "__main__":
-    print("Starting database verification suite on host localhost...")
+    print("Starting database verification suite on host...")
     print("Make sure you run 'docker-compose up -d' first to boot Postgres, Redis, and Qdrant containers.")
     
     pg_status = verify_postgres()
