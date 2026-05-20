@@ -144,7 +144,7 @@ docker run -d \
   --name palmmind_llm \
   -p 8080:8080 \
   --gpus all \
-  -v "C:<Model Location>\<Available GGUF Model name>:/models" \
+  -v "C:<Model Location>\<Model name>:/models" \
   ghcr.io/ggml-org/llama.cpp:server-cuda \
   -m /models/<Available GGUF Model name> \
   --mmproj /models/mmproj-F32.gguf \
