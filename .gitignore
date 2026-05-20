@@ -124,3 +124,4 @@ docker-compose.log
 fastembed_cache/
 .cache/huggingface/
 .cache/torch/
+PTesting/
