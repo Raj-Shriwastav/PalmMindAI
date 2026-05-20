@@ -99,7 +99,7 @@ Before you begin, ensure you have the following installed:
 
 ### Verify GPU is available to Docker:
 ```bash
-docker run --rm --gpus all nvidia/cuda:12.0.0-base-ubuntu22.04 nvidia-smi
+docker run --rm --gpus all nvidia/cuda:13.0.0-base-ubuntu22.04 nvidia-smi
 ```
 If this shows your GPU info, you're good to go!
 
@@ -144,9 +144,9 @@ docker run -d \
   --name palmmind_llm \
   -p 8080:8080 \
   --gpus all \
-  -v "C:\Users\RAJ SHRIWASTAVA\.lmstudio\models\unsloth\Qwen3.5-4B-GGUF:/models" \
+  -v "C:<Model Location>\<Available GGUF Model name>:/models" \
   ghcr.io/ggml-org/llama.cpp:server-cuda \
-  -m /models/Qwen3.5-4B-Q4_K_S.gguf \
+  -m /models/<Available GGUF Model name> \
   --mmproj /models/mmproj-F32.gguf \
   -ngl 99
 ```
@@ -443,9 +443,9 @@ Deploy the entire stack with one command:
 ```bash
 # 1. First, start the LLM container separately (needs GPU access)
 docker run -d --name palmmind_llm -p 8080:8080 --gpus all \
-  -v "C:\Users\RAJ SHRIWASTAVA\.lmstudio\models\unsloth\Qwen3.5-4B-GGUF:/models" \
+  -v "C:\<Model Address>\<Model Name>:/models" \
   ghcr.io/ggml-org/llama.cpp:server-cuda \
-  -m /models/Qwen3.5-4B-Q4_K_S.gguf \
+  -m /models/<Model Name> \
   --mmproj /models/mmproj-F32.gguf -ngl 99
 
 # 2. Then start all application services
@@ -634,7 +634,7 @@ python tests/verify_dbs.py
 ### FastEmbed model download fails
 ```bash
 # Clear the cache and retry
-python -c "import shutil; shutil.rmtree(r'C:\Users\RAJ SHRIWASTAVA\AppData\Local\Temp\fastembed_cache', ignore_errors=True)"
+python -c "import shutil; shutil.rmtree(r'C:\Users\<User Name>\AppData\Local\Temp\fastembed_cache', ignore_errors=True)"
 
 # Re-run
 python tests/verify_fastembed.py
