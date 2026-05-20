@@ -11,7 +11,7 @@ class Settings(BaseSettings):
 
     # PostgreSQL Configuration
     POSTGRES_USER: str = Field(default="postgres")
-    POSTGRES_PASSWORD: str = Field(default="postgres")
+    POSTGRES_PASSWORD: str = Field(default="palmmind_test_secure_pass_2026")
     POSTGRES_DB: str = Field(default="palmmind_db")
     POSTGRES_HOST: str = Field(default="localhost")
     POSTGRES_PORT: int = Field(default=5432)

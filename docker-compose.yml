@@ -5,7 +5,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: palmmind_test_secure_pass_2026
       POSTGRES_DB: palmmind_db
     ports:
       - "5432:5432"
@@ -51,7 +51,7 @@ services:
       - "8000:8000"
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=palmmind_test_secure_pass_2026
       - POSTGRES_DB=palmmind_db
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
