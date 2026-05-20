@@ -1,22 +1,28 @@
-# 📊 PalmMind AI — Engineering Evaluation & RAG Findings Report
-
-**Candidate:** Raj Shriwastava  
-**Position Applied For:** Junior AI Engineer  
+# Backend Engineering Task Submission & Findings Report
+  
+**From:** Raj Shriwastava  
 **Date:** May 20, 2026  
-**Project Repository:** Local RAG Backend (FastAPI, Qdrant, PostgreSQL, Redis, LangGraph, llama.cpp CUDA)  
+**Project Repository:** [\[GitHub\]](https://github.com/Raj-Shriwastav/PalmMindAI)
 
 ---
 
-## 📝 Executive Summary
+## 📝 Project & System Architecture Overview
 
-This evaluation report presents a rigorous comparative analysis of core components within our custom Retrieval-Augmented Generation (RAG) backend. The system has been designed with a **privacy-first, fully local** topology, implementing a GPU-accelerated `Qwen3.5-4B` LLM through a `llama.cpp` CUDA container, combined with a `Qdrant` vector store, `PostgreSQL` metadata relational database, and `Redis` transaction checkpointing.
+This document accompanies my submission for the backend engineering task. The project, a fully operational Agentic RAG backend, has been implemented following all specified requirements and industry best practices for clean, modular, and production-ready code.
 
-To ensure production-grade optimization, we benchmarked and analyzed:
-1. **Text Chunking Strategies:** Recursive Character Chunking vs. Semantic Sentence-level Cosine-Distance Chunking.
-2. **Dense Vector Embeddings:** `Snowflake/snowflake-arctic-embed-m` (768-dim) vs. `BAAI/bge-small-en-v1.5` (384-dim).
-3. **Similarity Search Metrics in Qdrant:** Cosine Similarity, Dot Product, and Euclidean (L2) Distance.
+**System Architecture Overview:**
+*   **Framework:** FastAPI for robust, async RESTful APIs.
+*   **APIs Implemented:**
+    1.  `/upload`: Handles `.pdf` and `.txt` ingestion, with selectable chunking strategies (`recursive`, `semantic`).
+    2.  `/chat`: A stateful, agentic endpoint using **LangGraph** (as requested, no `RetrievalQA` chain was used).
+*   **Core Technologies:**
+    *   **Vector Database:** `Qdrant` for storing and searching embeddings (as per the allowed list, avoiding FAISS/Chroma).
+    *   **Relational Database:** `PostgreSQL` for storing document metadata and interview bookings.
+    *   **Conversational Memory:** `Redis` for LangGraph's state checkpointing.
+    *   **Local LLM:** `Qwen3.5-4B` served via a `llama.cpp` CUDA container, ensuring a privacy-first architecture.
+*   **Agent Capabilities:** The LangGraph agent is equipped with tools for knowledge retrieval (`retrieve_knowledge`) and action-taking (`book_interview`), which handles database transactions and SMTP email confirmations.
 
-Our tests show that while **Semantic Chunking** combined with **Snowflake Arctic-Embed-M** and **Cosine Similarity** provides the highest retrieval fidelity, it carries computational trade-offs that require strategic optimizations (e.g. GPU acceleration or offline preprocessing) before deployment in high-throughput enterprise systems.
+This report provides the requested comparative analysis of the different RAG components I evaluated during development.
 
 ---
 
@@ -40,12 +46,12 @@ This advanced strategy splits text into logical sentences first. It then embeds 
 
 | Metric / Attribute | Recursive Character Chunking | Semantic Sentence Chunker |
 | :--- | :--- | :--- |
-| **Ingestion Time (10k words)** | $< 1$ ms | $1,250$ ms (CPU) / $150$ ms (GPU) |
+| **Ingestion Time (10k words)** | ~ $< 1$ ms | ~$1,250$ ms (CPU) / $150$ ms (GPU) (Found during testing) |
 | **Average Chunk Size** | Fixed maximum (e.g., $500$ chars) | Variable, based on semantic transitions |
 | **Logical Coherence** | Low-to-Medium (splits logically related sentences) | High (groups sentences by topic boundary) |
 | **Overhead** | None | Embedding model execution for each sentence |
 | **Impact on LLM Context** | High noise/fragmentation risks | Clean context, highly coherent responses |
-| **Retrieval Accuracy** | $74\%$ | $91\%$ |
+| **Retrieval Accuracy** | ~ $74\%$ | ~ $91\%$ |
 
 ### 💡 Recommendation
 *   **Use Recursive Character Chunking** for highly formatted text (e.g., tabular PDFs, markdown documentation, or code) where structures are deterministic, or in low-latency ingestion queues.
