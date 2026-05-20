@@ -111,7 +111,7 @@ If this shows your GPU info, you're good to go!
 
 ```bash
 # Clone the repository
-git clone https://github.com/Raj-Shriwastav/PalmMindAI
+git clone https://github.com/Raj-Shriwastav/PalmMindAI.git
 cd PalmMindAI
 
 # Create a Python virtual environment
@@ -144,9 +144,9 @@ docker run -d \
   --name palmmind_llm \
   -p 8080:8080 \
   --gpus all \
-  -v "C:<Model Location>\<Model name>:/models" \
+  -v "C:<Model Location>\Qwen3.5-4B:/models" \
   ghcr.io/ggml-org/llama.cpp:server-cuda \
-  -m /models/<Available GGUF Model name> \
+  -m /models/Qwen3.5-4B-Q4_K_S.gguf \
   --mmproj /models/mmproj-F32.gguf \
   -ngl 99
 ```
@@ -443,9 +443,9 @@ Deploy the entire stack with one command:
 ```bash
 # 1. First, start the LLM container separately (needs GPU access)
 docker run -d --name palmmind_llm -p 8080:8080 --gpus all \
-  -v "C:\<Model Address>\<Model Name>:/models" \
+  -v "C:\<Model Address>\Qwen3.5-4B:/models" \
   ghcr.io/ggml-org/llama.cpp:server-cuda \
-  -m /models/<Model Name> \
+  -m /models/Qwen3.5-4B-Q4_K_S.gguf \
   --mmproj /models/mmproj-F32.gguf -ngl 99
 
 # 2. Then start all application services
