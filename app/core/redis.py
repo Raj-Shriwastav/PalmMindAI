@@ -12,23 +12,25 @@ from langgraph.checkpoint.base import (
 import redis
 from app.core.config import settings
 
+
 class RedisCheckpointSaver(BaseCheckpointSaver):
     """Custom, high-reliability LangGraph Checkpoint Saver using Redis.
-    
+
     Persists agent conversation context dynamically across turns linked to user session IDs.
     Implements both sync and async interfaces required by LangGraph.
-    
+
     ⚠️ SECURITY WARNING (CISA / OWASP Compliance):
     This checkpointer uses Python's 'pickle' module for serialization. Pickle is required to
     correctly serialize complex internal LangChain/LangGraph state classes and dynamic graphs.
     However, parsing untrusted pickled data can lead to Arbitrary Code Execution (ACE).
-    
+
     To secure this pipeline in production:
     1. Ensure the Redis server is bound exclusively to 'localhost' (127.0.0.1) or run within an
        isolated, private virtual network (e.g. Docker network bridges / Kubernetes private subnets).
     2. NEVER expose the Redis port (6379) to the public internet.
     3. Enable robust authentication (Redis ACLs / 'requirepass') using high-entropy passwords.
     """
+
     def __init__(self, host: str, port: int, db: int = 0):
         super().__init__()
         self.client = redis.Redis(host=host, port=port, db=db)
@@ -37,7 +39,7 @@ class RedisCheckpointSaver(BaseCheckpointSaver):
         """Fetch a specific or latest checkpoint tuple for the current thread."""
         thread_id = config["configurable"]["thread_id"]
         checkpoint_id = config["configurable"].get("checkpoint_id")
-        
+
         # 1. Fetch exact checkpoint if checkpoint_id is supplied
         if checkpoint_id:
             key = f"checkpoint:{thread_id}:{checkpoint_id}"
@@ -51,28 +53,28 @@ class RedisCheckpointSaver(BaseCheckpointSaver):
                     parent_config=chk_dict.get("parent_config"),
                 )
             return None
-            
+
         # 2. Otherwise, fetch latest checkpoint for this conversation thread
         keys = self.client.keys(f"checkpoint:{thread_id}:*")
         if not keys:
             return None
-            
+
         checkpoints = []
         for k in keys:
             data = self.client.get(k)
             if data:
                 chk_dict = pickle.loads(data)
                 checkpoints.append((chk_dict, k))
-                
+
         if not checkpoints:
             return None
-            
+
         # Sort by internal timestamp to locate the most recent state
         checkpoints.sort(key=lambda x: x[0]["checkpoint"]["ts"], reverse=True)
         latest_chk_dict, latest_key = checkpoints[0]
-        
+
         latest_checkpoint_id = latest_key.decode("utf-8").split(":")[-1]
-        
+
         return CheckpointTuple(
             config={
                 "configurable": {
@@ -100,7 +102,7 @@ class RedisCheckpointSaver(BaseCheckpointSaver):
         """Persist a conversation state checkpoint to Redis."""
         thread_id = config["configurable"]["thread_id"]
         checkpoint_id = checkpoint["id"]
-        
+
         parent_checkpoint_id = config["configurable"].get("checkpoint_id")
         parent_config = None
         if parent_checkpoint_id:
@@ -110,19 +112,19 @@ class RedisCheckpointSaver(BaseCheckpointSaver):
                     "checkpoint_id": parent_checkpoint_id,
                 }
             }
-            
+
         key = f"checkpoint:{thread_id}:{checkpoint_id}"
-        
+
         checkpoint_dict = {
             "checkpoint": checkpoint,
             "metadata": metadata,
             "new_versions": new_versions,
             "parent_config": parent_config,
         }
-        
+
         # Store state using robust pickle serialization (needed to support complex LangGraph states)
         self.client.set(key, pickle.dumps(checkpoint_dict))
-        
+
         return {
             "configurable": {
                 "thread_id": thread_id,
@@ -163,9 +165,7 @@ class RedisCheckpointSaver(BaseCheckpointSaver):
     ) -> None:
         """Async wrapper for put_writes — runs sync Redis I/O in a thread executor."""
         loop = asyncio.get_event_loop()
-        await loop.run_in_executor(
-            None, self.put_writes, config, writes, task_id
-        )
+        await loop.run_in_executor(None, self.put_writes, config, writes, task_id)
 
     def list(
         self,
@@ -177,7 +177,7 @@ class RedisCheckpointSaver(BaseCheckpointSaver):
         """Yield historical checkpoints for the thread, matching before/limit constraints."""
         thread_id = config["configurable"]["thread_id"]
         keys = self.client.keys(f"checkpoint:{thread_id}:*")
-        
+
         checkpoints = []
         for k in keys:
             data = self.client.get(k)
@@ -185,9 +185,9 @@ class RedisCheckpointSaver(BaseCheckpointSaver):
                 chk_dict = pickle.loads(data)
                 checkpoint_id = k.decode("utf-8").split(":")[-1]
                 checkpoints.append((chk_dict, checkpoint_id))
-                
+
         checkpoints.sort(key=lambda x: x[0]["checkpoint"]["ts"], reverse=True)
-        
+
         if before:
             before_id = before["configurable"].get("checkpoint_id")
             found_idx = -1
@@ -196,11 +196,11 @@ class RedisCheckpointSaver(BaseCheckpointSaver):
                     found_idx = idx
                     break
             if found_idx != -1:
-                checkpoints = checkpoints[found_idx + 1:]
-                
+                checkpoints = checkpoints[found_idx + 1 :]
+
         if limit:
             checkpoints = checkpoints[:limit]
-            
+
         for chk_dict, chk_id in checkpoints:
             yield CheckpointTuple(
                 config={
@@ -230,7 +230,7 @@ class RedisCheckpointSaver(BaseCheckpointSaver):
         for item in results:
             yield item
 
+
 def get_redis_checkpointer() -> RedisCheckpointSaver:
     """FastAPI Dependency yielding the RedisCheckpointSaver instance."""
     return RedisCheckpointSaver(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
-
