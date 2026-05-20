@@ -1,0 +1,32 @@
+========================================================================
+PALMMIND AI - LOCAL ENGINEERING ENVIRONMENT SETUP GUIDE
+========================================================================
+
+This guide outlines the standard operating instructions to configure and execute
+the PalmMind Agentic microservices stack on your local developer workspace.
+
+SYSTEM PREREQUISITES:
+- Operating System: Windows 11 (WSL2 with Ubuntu) or Ubuntu 22.04 LTS native.
+- Python Runtime: Python 3.10.x environment required.
+- Docker Desktop: Installed with active CUDA driver passthrough capabilities.
+- Hardware: Dedicated NVIDIA GPU with at least 8GB VRAM is highly recommended.
+
+STEP-BY-STEP INITIALIZATION:
+Step 1: Set up the virtual environment and install packages:
+   $ python -m venv .venv
+   $ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   $ pip install -r requirements.txt
+
+Step 2: Initialize backing databases in Docker:
+   $ docker-compose up -d postgres redis qdrant
+
+Step 3: Download and run the llama.cpp server GGUF engine:
+   Make sure to map your local GGUF models folder to /models inside the container:
+   $ docker run -p 8080:8080 --gpus all -v "/path/to/models:/models" \
+     ghcr.io/ggml-org/llama.cpp:server-cuda -m /models/Qwen3.5-4B-Q4_K_S.gguf
+
+Step 4: Launch the FastAPI Application:
+   $ uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+Step 5: Verify the setup via tests:
+   $ pytest tests/
